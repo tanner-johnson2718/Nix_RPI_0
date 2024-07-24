@@ -1,10 +1,20 @@
 # Nix Tutorial
 
+# Concepts
+
 * Store
 * Flakes
 * Composition
+* Pills
 * `nix repl` - Open a repl to the Nix Language
-* `<nixos/pkgs>`
+* Lookup Paths `<nixos/pkgs>` -> defaults to certain Path
+* `nix-instantiate --eval` -> evaluates file containing nix expr
+* built-ins, import, pkgs, pkgs.lib
+* NixOS configuration
+* How does `nix-build` work
+    * Different Build Phases
+* Overrides
+* How come my callPackageWith example didn't work?? Had to used inherit?? 
 
 ## Nix Profile (User Environment)
 
@@ -30,28 +40,34 @@ The nix profile is the mechanism by which nix-os users add applications binaries
 | `nix-env -f <pkgs_list> -qa` | List all possible packages to install from passed `pkgs_list`. |
 | `nix-env -I <pkgs_list>` | Set default `pkgs_list` to the passed `pkgs_list`. `-f` can now be omitted. |
 | `nix-env --delete-generations old` | Delete all the old user profiles except current. |
-| `nix-env -e <p>` | Remove Package `p` from user environment. |  
+| `nix-env -e <p>` | Remove Package `p` from user environment. |
+
+**NOTE** When the `-f` flag is not supplied it searches the directory (or file) `~/.nix-defexpr`. There are semantics for how this default expressions is searched and is detailed [here](https://nix.dev/manual/nix/2.22/command-ref/nix-env).
 
 ### Questions
 
 * Does this support a mechanism for maintaining things like my .bashrc and other user ENV configs?
 
-## Garbage Collection
-
-`nix-store --gc`
-
 ## Derivations
 
-Derivation is an intermediate artifact that describes all the relevant components in building a package. 
+Derivation is an intermediate artifact that describes all the relevant components, inputs, etc in building a package.
 
 * `nix-instantiate a.nix`
 * Can install `nix-derivation` to provide binary `pretty-derivation` that takes a `.drv` as an input and outputs a pretty print of it.
 * `nix-store -qR <path to pkg in store>` - Gives the "runtime closure" or the packages needed to run the application binary.
 * `nix-store -qR <path to pkg drv in store>` - Gives the "build time closure" or the packages needed to build the application binary.
 
+## Garbage Collection
+
+`nix-store --gc`
+
 ## Channel
 
 URL that points to nix exprs?
+
+# Examples
+
+* 
 
 # References
 
