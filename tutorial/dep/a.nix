@@ -15,11 +15,13 @@ stdenv.mkDerivation {
     buildPhase = ''
         echo "a building ... " 
         touch a.out
+        echo "echo 'a in da house bitches'" >> a.out
     '';
 
     installPhase = ''
         echo "a installing ... " 
         mkdir -p $out/bin
         cp a.out $out/bin
+        chmod 777 $out/bin/a.out
     '';
 }

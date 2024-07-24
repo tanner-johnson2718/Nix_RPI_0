@@ -11,9 +11,3 @@ Nix based Rpi Zero 2 build template. Goal is to create relitivly locked down bas
 
 
 
-## References
-
-* [VM Tutorial](https://alberand.com/nixos-linux-kernel-vm.html)
-* [Nix Dev](https://nix.dev/)
-* [PhD Thesis](https://edolstra.github.io/pubs/phd-thesis.pdf)
-* [Starting Rpi Zero 2 conf](https://github.com/plmercereau/nixos-pi-zero-2)
