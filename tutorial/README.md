@@ -7,18 +7,18 @@
 * Composition
 * Pills
 * `nix repl` - Open a repl to the Nix Language
-* Lookup Paths `<nixos/pkgs>` -> defaults to certain Path
 * `nix-instantiate --eval` -> evaluates file containing nix expr
-* built-ins, import, pkgs, pkgs.lib
+* built-ins, import, pkgs, pkgs.lib, stdenv, callPackage,
 * NixOS configuration
 * How does `nix-build` work
     * Different Build Phases
 * Overrides
-* How come my callPackageWith example didn't work?? Had to used inherit?? 
+* Nix Shells
+* `NIX_PATH`
 
 ## Nix Profile (User Environment)
 
-The nix profile is the mechanism by which nix-os users add applications binaries to their ENV path. A users ENV is added to the store. Each change to the ENV gets a new store entry and a new sym link to that entry in the path shown below. The ENV store entry has a bin dir that itself contains symlinks to the path of the binary in the store.
+The nix profile is the mechanism by which nix-os users add application binaries (contained in the store) to their ENV path. A users ENV binary search path is itself added to the store. Each change to the ENV gets a new store entry and a new sym link to that entry in the path shown below. The ENV store entry has a bin dir that itself contains symlinks to the path of each binary in the store.
 
 ```
 /home/user/.local/state/nix/profiles
@@ -48,6 +48,26 @@ The nix profile is the mechanism by which nix-os users add applications binaries
 
 * Does this support a mechanism for maintaining things like my .bashrc and other user ENV configs?
 
+## Channels / The Nixpkgs Repo
+
+The high-level overview of a what a channel is can be read [here](https://nixos.wiki/wiki/Nix_channels). Put simply, a channel is a set of verified commits of the official [Nixpkgs repo](https://github.com/NixOS/nixpkgs). This repo contains the "build derivation" nix code of every package. As an example the [prusa slicer package](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/applications/misc/prusa-slicer/default.nix) has a make derivation nix script in the nixpkgs repo, which points to a very specific version / revision of the prusa-slicer code and describes its build process. Also within the nixpkgs is the [master composition list](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/top-level/all-packages.nix) which contains the `callPackage` invocation of each packages make derivation script.
+
+So a channel is verified revision of the nixpkgs repo which contains all the meta data on packages added to nix, pins each package to a specific revision or hash of that packages source code, and also provides some of the core nix functionality but we will ignore that for now.
+
+* If I run `nix-channels --list` for my user I get nothing
+* But if I run `sudo nix-channels --list` I get my main root channel
+* `/etc/nixos/configuration.nix` gives the high level semantic version (i.e. 24.05) as config option on your system conf
+* `nix-channel --add https://nixos.org/channels/nixos-24.05-small nixos`
+    * All this did is add an entry to `~/.nix-channels`?? 
+
+* Lookup Path `<nixos/pkgs>` -> `/nix/var/nix/profiles/per-user/root/channels/nixos/pkgs`
+* We see at `/nix/var/nix/profiles/per-user/root/` a sym link structure like that for [user envs](./README.md/#nix-profile-user-environment).
+* `nix-build '<nixpkgs/nixos>' -A vm -I nixpkgs=channel:nixos-23.11 -I nixos-config=./configuration.nix`.
+* [nix-channel cmd ref](https://nix.dev/manual/nix/2.18/command-ref/nix-channel)
+* For users `~/.nix-defexpr` points to channels
+* `/nix/var/nix/profiles` contains all the old system configs i.e. when I update my system conf and do a nix-rebuild this dir contains all the old backed up system configs. 
+
+
 ## Derivations
 
 Derivation is an intermediate artifact that describes all the relevant components, inputs, etc in building a package.
@@ -60,10 +80,6 @@ Derivation is an intermediate artifact that describes all the relevant component
 ## Garbage Collection
 
 `nix-store --gc`
-
-## Channel
-
-URL that points to nix exprs?
 
 # Examples
 
