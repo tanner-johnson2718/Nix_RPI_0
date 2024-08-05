@@ -50,15 +50,18 @@ The nix profile is the mechanism by which nix-os users add application binaries 
 
 ## Channels / The Nixpkgs Repo
 
-The high-level overview of a what a channel is can be read [here](https://nixos.wiki/wiki/Nix_channels). Put simply, a channel is a set of verified commits of the official [Nixpkgs repo](https://github.com/NixOS/nixpkgs). This repo contains the "build derivation" nix code of every package. As an example the [prusa slicer package](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/applications/misc/prusa-slicer/default.nix) has a make derivation nix script in the nixpkgs repo, which points to a very specific version / revision of the prusa-slicer code and describes its build process. Also within the nixpkgs is the [master composition list](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/top-level/all-packages.nix) which contains the `callPackage` invocation of each packages make derivation script.
+The high-level overview of a what a channel is can be read [here](https://nixos.wiki/wiki/Nix_channels). Put simply, a channel is a set of verified commits of the official [Nixpkgs repo](https://github.com/NixOS/nixpkgs) (although they may reference a general remote nix expression, but in practice referencing the nixpkgs repo is the most common use case). This repo contains the "build derivation" nix code of every package. As an example the [prusa slicer package](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/applications/misc/prusa-slicer/default.nix) has a make derivation nix script in the nixpkgs repo, which points to a very specific version / revision of the prusa-slicer code and describes its build process. Also within the nixpkgs is the [master composition list](https://github.com/NixOS/nixpkgs/blob/9962bb4f68e17c586da9d97f1ecb8b0ec071f726/pkgs/top-level/all-packages.nix) which contains the `callPackage` invocation of each packages make derivation script.
 
-So a channel is verified revision of the nixpkgs repo which contains all the meta data on packages added to nix, pins each package to a specific revision or hash of that packages source code, and also provides some of the core nix functionality but we will ignore that for now.
+So a channel is verified revision of the nixpkgs repo which contains all the meta data on packages added to nix, pins each package to a specific revision or hash of that packages source code, and also provides some of the core nix functionality but we will ignore that for now. You can add a channel to your user channels:
 
-* If I run `nix-channels --list` for my user I get nothing
-* But if I run `sudo nix-channels --list` I get my main root channel
-* `/etc/nixos/configuration.nix` gives the high level semantic version (i.e. 24.05) as config option on your system conf
-* `nix-channel --add https://nixos.org/channels/nixos-24.05-small nixos`
-    * All this did is add an entry to `~/.nix-channels`?? 
+```
+nix-channel --add nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+nix-channels --list
+```
+
+The second command will dump the contents of the users `~/.nix-channels` file. These commands can also be ran with `sudo` in which case one adds and lists the system channels (file found at `/root/.nix-channels`. This `/root` dir also contains the system wide `~/.nix-defexpr`).
+
+
 
 * Lookup Path `<nixos/pkgs>` -> `/nix/var/nix/profiles/per-user/root/channels/nixos/pkgs`
 * We see at `/nix/var/nix/profiles/per-user/root/` a sym link structure like that for [user envs](./README.md/#nix-profile-user-environment).
