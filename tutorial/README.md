@@ -86,7 +86,17 @@ Derivation is an intermediate artifact that describes all the relevant component
 
 # Examples
 
-* 
+## RPI 4 Image
+
+* [Follow instructions](https://nix.dev/tutorials/nixos/installing-nixos-on-a-raspberry-pi to get base image
+* Clone this repo onto the board
+* GPIO)   
+    * [PR](https://github.com/NixOS/nixpkgs/pull/316936)
+        * Took [pigpio.nix](./pigpio.nix)
+    * Added boiler plate composition [default.nix](./default.nix)
+    *  run `nix-env -f ./default.nix -i pigpio` in repo on pi
+    *  sudo pigpiod fails  -> [Issue](https://github.com/NixOS/nixpkgs/issues/122993)
+    
 
 # References
 
